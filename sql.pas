@@ -289,16 +289,9 @@ var
 	buffer: string;
 begin
 	try
-	AssignFile(fd, 'struct.dat');
+	AssignFile(fd, 'db.csv');
 	Reset(fd);
 	if not Eof(fd) then Readln(fd, listStruct);
-	CloseFile(fd);
-	except on e : EInOutError do
-		Writeln('No struct file. Create the table structure with "create <struct>"');
-	end;
-	try
-	AssignFile(fd, 'db.dat');
-	Reset(fd);
 	while not Eof(fd) do
 	begin
 		Readln(fd, buffer);
@@ -306,7 +299,7 @@ begin
 	end;
 	CloseFile(fd);
 	except on e : EInOutError do
-		Writeln('No data file. Insert date with "insert <field>=<value>;<field>=<value>"');
+		Writeln('No csv file. Create the table structure with "create <struct>" and insert data with "insert <field>=<value>;<field>=<value>"');
 	end;
 end;
 
@@ -314,12 +307,9 @@ destructor TDb.Destroy();
 var
 	fd: TextFile;
 begin
-	AssignFile(fd, 'struct.dat');
+	AssignFile(fd, 'db.csv');
 	ReWrite(fd);
 	Writeln(fd, listStruct);
-	CloseFile(fd);
-	AssignFile(fd, 'db.dat');
-	ReWrite(fd);
 	while (listFirst.next <> nil) do
 	begin
 		Writeln(fd, listFirst.next^.data);
